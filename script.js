@@ -267,7 +267,7 @@ function evaluateValue(currentFx, currentXau, currentKimp) {
 // 2. 괴리율 시리즈 데이터 가져오기 및 차트 업데이트
 async function load_gold_premium_series() {
 //    const SERIES_URL = 'https://goldkimp.com/wp-content/uploads/json/gold_premium_series.json';
-    const SERIES_URL = 'json/gold_premium_series.json';
+    const SERIES_URL = 'data/gold_series.json';
     
     try {
         const response = await fetch(SERIES_URL, { cache: 'no-store' });
@@ -288,7 +288,7 @@ window.addEventListener('resize', () => {
 
 async function fetchRealTimeFxFinancialData() {
     try {
-        const fxUrl = 'https://api.manana.kr/exchange/rate/KRW/USD.json';
+        const fxUrl = 'data/live_fx.json';
         const fxRes = await fetch(fxUrl, { cache: 'no-store' });
         const fxData = await fxRes.json();
         // 환율 파싱
@@ -296,7 +296,7 @@ async function fetchRealTimeFxFinancialData() {
             apiData.realTimeUsdKrw = parseFloat(fxData[0].rate);
         }
     } catch (e) {
-        console.error("데이터 로드 실패 (Manana):", e);
+        console.error("데이터 로드 실패 (Fx):", e);
     }
 }
 
@@ -312,15 +312,17 @@ function XauCallback(goldData) {
 
 async function fetchRealTimeXauFinancialData() {
     try {
-        // 국제 금 스팟 시세 (GoldPrice.org의 숨겨진 JSON 엔드포인트)
-        const goldUrl = 'https://data-asg.goldprice.org/dbXRates/USD';
-        const goldUrlProxy = 'https://corsproxy.io/?' + encodeURIComponent(goldUrl) + '?callback=XauCallback';
-        $.ajax({
-            url: goldUrlProxy,
-            dataType: 'jsonp',
-        });
+        const goldUrl = 'data/live_gold.json';
+        const goldRes = await fetch(goldUrl, { cache: 'no-store' });
+        const goldData = await goldRes.json();
+        // 금값 파싱
+        if (goldData.items && goldData.items.length > 0) {
+            const spotPrice = goldData.items[0].xauPrice;
+            apiData.xauPrice = parseFloat(spotPrice);
+            console.log(`국제 금 스팟 시세 갱신: $${apiData.xauPrice}`);
+        }
     } catch (e) {
-        console.error("데이터 로드 실패 (GoldPrice.org):", e);
+        console.error("데이터 로드 실패 (Gold):", e);
     }
 }
 
@@ -436,7 +438,7 @@ function renderDelta(id, deltaObj, type, scale = 1) {
 }
 
 async function initFetch() {
-    const API_URL = 'https://goldkimp.com/wp-json/gk/gold/v1?tf=15m';
+    const API_URL = 'data/gold_kimp_latest.json';
     try {
         const response = await fetch(API_URL, { cache: 'no-store' });
         const data = await response.json();
