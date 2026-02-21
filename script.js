@@ -288,7 +288,7 @@ window.addEventListener('resize', () => {
 
 async function fetchRealTimeFxFinancialData() {
     try {
-        const fxUrl = 'data/live_fx.json';
+        const fxUrl = 'https://api.manana.kr/exchange/rate/KRW/USD.json';
         const fxRes = await fetch(fxUrl, { cache: 'no-store' });
         const fxData = await fxRes.json();
         // 환율 파싱
@@ -297,32 +297,6 @@ async function fetchRealTimeFxFinancialData() {
         }
     } catch (e) {
         console.error("데이터 로드 실패 (Fx):", e);
-    }
-}
-
-function XauCallback(goldData) {
-    // 국제 금값 파싱
-    // 응답 예시: { "items": [ { "curr": "USD", "xauPrice": 2345.50, ... } ] }
-    if (goldData.items && goldData.items.length > 0) {
-        const spotPrice = goldData.items[0].xauPrice;
-        apiData.xauPrice = parseFloat(spotPrice);
-        console.log(`국제 금 스팟 시세 갱신: $${apiData.xauPrice}`);
-    }
-}
-
-async function fetchRealTimeXauFinancialData() {
-    try {
-        const goldUrl = 'data/live_gold.json';
-        const goldRes = await fetch(goldUrl, { cache: 'no-store' });
-        const goldData = await goldRes.json();
-        // 금값 파싱
-        if (goldData.items && goldData.items.length > 0) {
-            const spotPrice = goldData.items[0].xauPrice;
-            apiData.xauPrice = parseFloat(spotPrice);
-            console.log(`국제 금 스팟 시세 갱신: $${apiData.xauPrice}`);
-        }
-    } catch (e) {
-        console.error("데이터 로드 실패 (Gold):", e);
     }
 }
 
@@ -438,7 +412,8 @@ function renderDelta(id, deltaObj, type, scale = 1) {
 }
 
 async function initFetch() {
-    const API_URL = 'data/gold_kimp_latest.json';
+    const API_URL = 'https://goldkimp.com/wp-json/gk/gold/v1?tf=15m';
+    //const API_URL = 'data/gold_kimp_latest.json';
     try {
         const response = await fetch(API_URL, { cache: 'no-store' });
         const data = await response.json();
@@ -459,7 +434,6 @@ async function initFetch() {
 
         // 금값 가져온 직후 실시간 환율도 동기화
         await fetchRealTimeFxFinancialData();
-        await fetchRealTimeXauFinancialData();
 
         if (!premiumChart) initPremiumChart();
         if (!document.getElementById('tradingview_usdkrw').hasChildNodes()) {
@@ -477,7 +451,6 @@ load_gold_premium_series();
 initFetch();
 //setInterval(initFetch, 60000);
 setInterval(fetchRealTimeFxFinancialData, 10000);
-setInterval(fetchRealTimeXauFinancialData, 10000);
 setInterval(renderUI, 5000);
 
 // 단위 변경 이벤트

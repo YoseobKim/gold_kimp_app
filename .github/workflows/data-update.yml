@@ -2,7 +2,7 @@ name: Data Update and Deploy
 
 on:
   schedule:
-    - cron: '*/20 * * * *'
+    - cron: '0 19 * * *'
   workflow_dispatch:
 
 jobs:
