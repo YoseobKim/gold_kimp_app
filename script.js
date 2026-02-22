@@ -300,6 +300,19 @@ async function fetchRealTimeFxFinancialData() {
     }
 }
 
+async function fetchRealTimeXAUData() {
+    try {
+        const XAUUrl = 'https://api.gold-api.com/price/XAU';
+        const XAURes = await fetch(XAUUrl, { cache: 'no-store' });
+        const XAUData = await XAURes.json();
+        if (XAUData) {
+            apiData.xauPrice = parseFloat(XAUData.price);
+        }
+    } catch (e) {
+        console.error("데이터 로드 실패 (Fx):", e);
+    }
+}
+
 /**
  * 2. 프리미엄(괴리율) 실시간 재계산 및 UI 업데이트
  */
@@ -451,6 +464,7 @@ load_gold_premium_series();
 initFetch();
 //setInterval(initFetch, 60000);
 setInterval(fetchRealTimeFxFinancialData, 10000);
+setInterval(fetchRealTimeXAUData, 10000);
 setInterval(renderUI, 5000);
 
 // 단위 변경 이벤트
