@@ -1,18 +1,18 @@
 {
-  "ts": 1771414205518,
-  "tsj": 1771414205380,
-  "date": "Feb 18th 2026, 06:30:05 am NY",
+  "ts": 1786821763453,
+  "tsj": 1786821755693,
+  "date": "Aug 15th 2026, 03:22:35 pm NY",
   "items": [
     {
       "curr": "USD",
-      "xauPrice": 4915.48,
-      "xagPrice": 75.7345,
-      "chgXau": 27.9225,
-      "chgXag": 1.9335,
-      "pcXau": 0.5713,
-      "pcXag": 2.6199,
-      "xauClose": 4887.5575,
-      "xagClose": 73.801
+      "xauPrice": 4376.62,
+      "xagPrice": 64.7015,
+      "chgXau": 13.43,
+      "chgXag": -0.1005,
+      "pcXau": 0.3078,
+      "pcXag": -0.1551,
+      "xauClose": 4363.19,
+      "xagClose": 64.80195
     }
   ]
 }
